@@ -1,4 +1,4 @@
-import { Specification } from "../entities/Specification";
+import { Specification } from "../infra/typeorm/entities/Specification";
 
 // DTO -> criar um objeto responsavel pela transferencia de dados de uma camada pra outra
 interface ICreateSpecificationDTO {

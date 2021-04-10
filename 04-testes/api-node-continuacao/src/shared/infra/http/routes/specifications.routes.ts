@@ -1,8 +1,8 @@
 import { Router } from "express";
 
+import { CreateSpecificationController } from "../../../../modules/cars/useCases/createSpecification/CreateSpecificationController";
+import { FindSpecificationController } from "../../../../modules/cars/useCases/listSpecification/FindSpecificationController";
 import { ensureAuthenticated } from "../middlewares/ensureAuthenticated";
-import { CreateSpecificationController } from "../modules/cars/useCases/createSpecification/CreateSpecificationController";
-import { FindSpecificationController } from "../modules/cars/useCases/listSpecification/FindSpecificationController";
 
 const createSpecificationController = new CreateSpecificationController();
 const findSpecificationController = new FindSpecificationController();
