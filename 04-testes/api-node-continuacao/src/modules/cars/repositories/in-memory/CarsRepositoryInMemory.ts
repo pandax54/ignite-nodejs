@@ -1,15 +1,18 @@
 import { ICreateCarsDTO } from "@modules/cars/dtos/ICreateCarsDTO";
-import { Cars } from "@modules/cars/infra/typeorm/entities/Car";
+import { Car } from "@modules/cars/infra/typeorm/entities/Car";
 
 import { ICarsRepository } from "../ICarsRepository";
 
 class CarsRepositoryInMemory implements ICarsRepository {
-  cars: Cars[] = [];
-  async findByLicensePlate(license_plate: string): Promise<Cars> {
+  async findById(id: string): Promise<Car> {
+    return this.cars.find((car) => car.id === id);
+  }
+  cars: Car[] = [];
+  async findByLicensePlate(license_plate: string): Promise<Car> {
     const car = this.cars.find((car) => car.license_plate === license_plate);
     return car;
   }
-  async list(): Promise<Cars[]> {
+  async list(): Promise<Car[]> {
     const list = this.cars;
     return list;
   }
@@ -21,10 +24,10 @@ class CarsRepositoryInMemory implements ICarsRepository {
     fine_amount,
     brand,
     category_id,
-  }: ICreateCarsDTO): Promise<void> {
-    const cars = new Cars();
+  }: ICreateCarsDTO): Promise<Car> {
+    const car = new Car();
 
-    Object.assign(cars, {
+    Object.assign(car, {
       name,
       description,
       daily_rate,
@@ -34,7 +37,22 @@ class CarsRepositoryInMemory implements ICarsRepository {
       category_id,
     });
 
-    this.cars.push(cars);
+    this.cars.push(car);
+
+    return car;
+  }
+  async findAvailable(
+    name?: string,
+    brand?: string,
+    category_id?: string
+  ): Promise<Car[]> {
+    return this.cars.filter(
+      (car) =>
+        car.available === true &&
+        ((brand && car.brand === "brand") ||
+          (name && car.name === name) ||
+          (category_id && car.category_id === category_id))
+    );
   }
 }
 

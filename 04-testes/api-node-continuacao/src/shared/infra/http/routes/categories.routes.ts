@@ -6,6 +6,8 @@ import { CreateCategoryController } from "../../../../modules/cars/useCases/crea
 // import createCategoryController from "../modules/cars/useCases/createCategory";
 import { ImportCategoryController } from "../../../../modules/cars/useCases/importCategory/ImportCategoryController";
 import { ListCategoryController } from "../../../../modules/cars/useCases/listCategory/ListCategoryController";
+import { ensureAdmin } from "../middlewares/ensureAdmin";
+import { ensureAuthenticated } from "../middlewares/ensureAuthenticated";
 // import listCategoryController from "../modules/cars/useCases/listCategory";
 
 // precisamos instanciar o multer para utiliza-lo como middleware
@@ -21,12 +23,19 @@ const importCategoryController = new ImportCategoryController();
 //   return createCategoryController().handle(request, response);
 // });
 
-categoriesRouter.post("/", createCategoryController.handle); // nosso controller funcionará como um middleware, dessa forma ele receberá o request e response
+categoriesRouter.post(
+  "/",
+  ensureAuthenticated,
+  ensureAdmin,
+  createCategoryController.handle
+); // nosso controller funcionará como um middleware, dessa forma ele receberá o request e response
 
 categoriesRouter.get("/", listCategoryController.handle);
 
 categoriesRouter.post(
   "/import",
+  ensureAuthenticated,
+  ensureAdmin,
   upload.single("file"),
   importCategoryController.handle
 );
