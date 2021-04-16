@@ -1,7 +1,7 @@
 import { ICreateCarsDTO } from "@modules/cars/dtos/ICreateCarsDTO";
 import { Car } from "@modules/cars/infra/typeorm/entities/Car";
 
-import { ICarsRepository } from "../ICarsImagesRepository";
+import { ICarsRepository } from "../ICarsRepository";
 
 class CarsRepositoryInMemory implements ICarsRepository {
   async findById(id: string): Promise<Car> {
