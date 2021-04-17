@@ -1,7 +1,7 @@
 module.exports = {
   type: "postgres",
   host: "localhost",
-  port: 5432,
+  port: process.env.PORT_DB,
   username: "fernanda",
   password: "ignite",
   database: "rentx",
