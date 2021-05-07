@@ -33,29 +33,30 @@ describe("Authenticate User", () => {
     expect(result).toHaveProperty("token");
   });
 
-  it("should not be able to authenticate an unregistered user", () => {
+  it("should not be able to authenticate an unregistered user", async () => {
     // esse iremos verificar pelo appError, dessa forma iremos colocar toda a função que esperamos ser rejeitada no rejects
-    expect(async () => {
-      await authenticateUserUseCase.execute({
+    await expect(
+      authenticateUserUseCase.execute({
         email: "false@email.com",
         password: "12345",
-      });
-    }).rejects.toBeInstanceOf(AppError);
+      })
+    ).rejects.toEqual(new AppError("Email or password incorrect"));
   });
 
-  it("should not be able to authenticate an user with wrong password", () => {
-    expect(async () => {
-      const newUser: ICreateUserDTO = {
-        driver_license: "9999",
-        email: "new@rmail",
-        name: "name",
-        password: "1234",
-      };
-      await createUserUseCase.execute(newUser);
-      await authenticateUserUseCase.execute({
+  it("should not be able to authenticate an user with wrong password", async () => {
+    const newUser: ICreateUserDTO = {
+      driver_license: "9999",
+      email: "new@rmail",
+      name: "name",
+      password: "1234",
+    };
+    await createUserUseCase.execute(newUser);
+
+    await expect(
+      authenticateUserUseCase.execute({
         email: newUser.email,
         password: "incorectPassword",
-      });
-    }).rejects.toBeInstanceOf(AppError);
+      })
+    ).rejects.toEqual(new AppError("Email or password incorrect"));
   });
 });

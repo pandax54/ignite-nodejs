@@ -1,3 +1,0 @@
-class DevolutionRentalUseCase {}
-
-export { DevolutionRentalUseCase };

@@ -16,7 +16,7 @@ describe("Criar categoria", () => {
     // para isso criaremos repositórios fakes -> categoriesRepositoryInMemory
     const category = {
       name: "Category Test",
-      description: "Category descrption Test",
+      description: "Category description Test",
     };
     await createCategoryUseCase.execute({
       name: category.name,
@@ -32,20 +32,20 @@ describe("Criar categoria", () => {
   });
 
   it("should not be able to create category with the same name", async () => {
-    expect(async () => {
-      const category = {
-        name: "Category Test",
-        description: "Category descrption Test",
-      };
-      await createCategoryUseCase.execute({
-        name: category.name,
-        description: category.description,
-      });
+    const category = {
+      name: "Category Test 2",
+      description: "Category description Test",
+    };
+    await createCategoryUseCase.execute({
+      name: category.name,
+      description: category.description,
+    });
 
-      await createCategoryUseCase.execute({
+    await expect(
+      createCategoryUseCase.execute({
         name: category.name,
         description: category.description,
-      });
-    }).rejects.toBeInstanceOf(AppError);
+      })
+    ).rejects.toEqual(new AppError("Category already registered!"));
   });
 });

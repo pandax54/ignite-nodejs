@@ -5564,7 +5564,7 @@ ts-jest@^26.5.4:
 
 ts-node-dev@^1.1.6:
   version "1.1.6"
-  resolved "https://registry.npmjs.org/ts-node-dev/-/ts-node-dev-1.1.6.tgz"
+  resolved "https://registry.yarnpkg.com/ts-node-dev/-/ts-node-dev-1.1.6.tgz#ee2113718cb5a92c1c8f4229123ad6afbeba01f8"
   integrity sha512-RTUi7mHMNQospArGz07KiraQcdgUVNXKsgO2HAi7FoiyPMdTDqdniB6K1dqyaIxT7c9v/VpSbfBZPS6uVpaFLQ==
   dependencies:
     chokidar "^3.5.1"

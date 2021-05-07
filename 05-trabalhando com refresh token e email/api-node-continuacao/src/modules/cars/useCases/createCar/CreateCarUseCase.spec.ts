@@ -25,9 +25,18 @@ describe("Create car", () => {
     expect(car).toHaveProperty("id");
     expect(car.available).toBe(true);
   });
-  it("Should not be able to create a new car with a alredy registered license plate", () => {
-    expect(async () => {
-      await createCarUseCase.execute({
+  it("Should not be able to create a new car with a alredy registered license plate", async () => {
+    await createCarUseCase.execute({
+      name: "name",
+      description: "description",
+      daily_rate: 100,
+      license_plate: "plate number",
+      fine_amount: 100,
+      brand: "brand",
+      category_id: "category",
+    });
+    await expect(
+      createCarUseCase.execute({
         name: "name",
         description: "description",
         daily_rate: 100,
@@ -35,16 +44,7 @@ describe("Create car", () => {
         fine_amount: 100,
         brand: "brand",
         category_id: "category",
-      });
-      await createCarUseCase.execute({
-        name: "name",
-        description: "description",
-        daily_rate: 100,
-        license_plate: "plate number",
-        fine_amount: 100,
-        brand: "brand",
-        category_id: "category",
-      });
-    }).rejects.toBeInstanceOf(AppError);
+      })
+    ).rejects.toEqual(new AppError("Car already registered!"));
   });
 });

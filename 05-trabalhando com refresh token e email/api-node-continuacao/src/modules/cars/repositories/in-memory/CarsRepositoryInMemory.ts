@@ -4,6 +4,7 @@ import { Car } from "@modules/cars/infra/typeorm/entities/Car";
 import { ICarsRepository } from "../ICarsRepository";
 
 class CarsRepositoryInMemory implements ICarsRepository {
+  cars: Car[] = [];
   async updateAvailable(id: string, available: boolean): Promise<void> {
     const car = this.cars.find((car) => car.id === id);
     car.available = available;
@@ -14,7 +15,6 @@ class CarsRepositoryInMemory implements ICarsRepository {
   async findById(id: string): Promise<Car> {
     return this.cars.find((car) => car.id === id);
   }
-  cars: Car[] = [];
   async findByLicensePlate(license_plate: string): Promise<Car> {
     const car = this.cars.find((car) => car.license_plate === license_plate);
     return car;
@@ -35,16 +35,28 @@ class CarsRepositoryInMemory implements ICarsRepository {
   }: ICreateCarsDTO): Promise<Car> {
     const car = new Car();
 
-    Object.assign(car, {
-      name,
-      description,
-      daily_rate,
-      license_plate,
-      fine_amount,
-      brand,
-      category_id,
-      id,
-    });
+    if (id) {
+      Object.assign(car, {
+        name,
+        description,
+        daily_rate,
+        license_plate,
+        fine_amount,
+        brand,
+        category_id,
+        id,
+      });
+    } else {
+      Object.assign(car, {
+        name,
+        description,
+        daily_rate,
+        license_plate,
+        fine_amount,
+        brand,
+        category_id,
+      });
+    }
 
     this.cars.push(car);
 
