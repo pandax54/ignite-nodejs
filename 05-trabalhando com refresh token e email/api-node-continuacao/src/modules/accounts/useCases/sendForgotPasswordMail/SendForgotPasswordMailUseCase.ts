@@ -19,7 +19,7 @@ class SendForgotPasswordMailUseCase {
     @inject("EtherealMailProvider")
     private mailProvider: IMailProvider
   ) {}
-  async execute(email: string) {
+  async execute(email: string): Promise<void> {
     const user = await this.usersRepository.findByEmail(email);
 
     if (!user) {
@@ -29,7 +29,7 @@ class SendForgotPasswordMailUseCase {
     // se tiver - gerar token
     const token = uuid();
 
-    const expires_date = this.dateProvider.addHours(3);
+    const expires_date = await this.dateProvider.addHours(3);
 
     await this.usersTokensRepository.create({
       refresh_token: token,
