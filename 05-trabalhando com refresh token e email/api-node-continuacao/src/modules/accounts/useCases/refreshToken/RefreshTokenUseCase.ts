@@ -11,6 +11,11 @@ interface IPayload {
   email: string; // colocamos dentro do nosso payload
 }
 
+interface ITokenResponse {
+  token: string;
+  refresh_token: string;
+}
+
 @injectable()
 class RefreshTokenUseCase {
   constructor(
@@ -19,7 +24,7 @@ class RefreshTokenUseCase {
     @inject("DayjsDateProvider")
     private dateProvider: IDateProvider
   ) {}
-  async execute(token: string): Promise<string> {
+  async execute(token: string): Promise<ITokenResponse> {
     // verificação do refresh token - se ele existe e se ele é válido como jsonwebtoken
     const { sub, email } = verify(token, auth.secret_refresh_token) as IPayload;
     // precisamos ter acesso ao user portador desse token
@@ -56,7 +61,16 @@ class RefreshTokenUseCase {
       user_id,
     });
 
-    return refresh_token;
+    const newToken = sign({ email }, auth.secret_refresh_token, {
+      // email como payload - podemos inserir dentro do token
+      subject: user_id, // decode.sub
+      expiresIn: auth.expires_in_token,
+    });
+
+    return {
+      token: newToken,
+      refresh_token,
+    };
   }
 }
 

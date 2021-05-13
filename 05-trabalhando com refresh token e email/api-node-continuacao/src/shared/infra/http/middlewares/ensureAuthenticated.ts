@@ -25,22 +25,16 @@ export async function ensureAuthenticated(
   // podemos ignora a posição zero
   const [, token] = authHeader.split(" "); // criar um array com duas posicoes separando pelo espaço
   try {
-    const { sub: user_id } = verify(
-      token,
-      auth.secret_refresh_token
-    ) as IPayload; // forçando o tipo
+    const { sub: user_id } = verify(token, auth.secret_token) as IPayload; // forçando o tipo
 
     // find the user
     // const usersRepository = new UsersRepository();
     // const user = await usersRepository.findById(user_id);
-    const usersTokensRepository = new UsersTokensRepository();
-    const user = await usersTokensRepository.findByUserIdAndRefreshToken(
-      user_id,
-      token
-    );
-    if (!user) {
-      throw new AppError("User does not exist", 404);
-    }
+    // const usersTokensRepository = new UsersTokensRepository();
+    // const user = await usersTokensRepository.findByUserIdAndRefreshToken(user_id,token);
+    // if (!user) {
+    //   throw new AppError("User does not exist", 404);
+    // }
     request.user = {
       // precisaremos criar nossa propria tipagem no request
       id: user_id,
