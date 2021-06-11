@@ -24,16 +24,19 @@ class RefreshTokenUseCase {
     @inject("DayjsDateProvider")
     private dateProvider: IDateProvider
   ) {}
-  async execute(token: string): Promise<ITokenResponse> {
+  async execute(refresh_token: string): Promise<ITokenResponse> {
     // verificação do refresh token - se ele existe e se ele é válido como jsonwebtoken
-    const { sub, email } = verify(token, auth.secret_refresh_token) as IPayload;
+    const { sub, email } = verify(
+      refresh_token,
+      auth.secret_refresh_token
+    ) as IPayload;
     // precisamos ter acesso ao user portador desse token
     const user_id = sub;
 
     // veriricar se esse refresh token existe no nosso banco de dados e se está vinculado a esse user
     const userToken = await this.usersTokensRepository.findByUserIdAndRefreshToken(
       user_id,
-      token
+      refresh_token
     );
 
     if (!userToken) {
@@ -45,7 +48,7 @@ class RefreshTokenUseCase {
     await this.usersTokensRepository.deleteById(userToken.id);
 
     // geraremos um novo token - usando a mesma lógica que usamos no AuthenticateUserUseCase
-    const refresh_token = sign({ email }, auth.secret_refresh_token, {
+    const new_refresh_token = sign({ email }, auth.secret_refresh_token, {
       // email como payload - podemos inserir dentro do token
       subject: user_id, // decode.sub
       expiresIn: auth.expires_in_refresh_token,
@@ -57,11 +60,11 @@ class RefreshTokenUseCase {
 
     await this.usersTokensRepository.create({
       expires_date: refresh_token_expires_date,
-      refresh_token,
+      refresh_token: new_refresh_token,
       user_id,
     });
 
-    const newToken = sign({ email }, auth.secret_refresh_token, {
+    const newToken = sign({}, auth.secret_token, {
       // email como payload - podemos inserir dentro do token
       subject: user_id, // decode.sub
       expiresIn: auth.expires_in_token,
@@ -69,7 +72,7 @@ class RefreshTokenUseCase {
 
     return {
       token: newToken,
-      refresh_token,
+      refresh_token: new_refresh_token,
     };
   }
 }

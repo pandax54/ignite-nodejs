@@ -2,9 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { verify } from "jsonwebtoken";
 
 import auth from "@config/auth";
-import { UsersTokensRepository } from "@modules/accounts/infra/typeorm/repositories/UsersTokensRepository";
 
-import { UsersRepository } from "../../../../modules/accounts/infra/typeorm/repositories/UsersRepository";
 import { AppError } from "../../../errors/AppError";
 
 interface IPayload {
@@ -40,8 +38,8 @@ export async function ensureAuthenticated(
       id: user_id,
     };
 
-    next();
-  } catch {
+    return next();
+  } catch (error) {
     throw new AppError("Invalid token!", 401);
   }
 }
