@@ -6,9 +6,11 @@
  * criar controller
  */
 
+import { IStorageProvider } from "@shared/container/providers/StorageProvider/IStorageProvider";
+
 import { inject, injectable } from "tsyringe";
 
-import { deleteFile } from "../../../../utils/file";
+// import { deleteFile } from "../../../../utils/file";
 import { IUsersRepository } from "../../repositories/IUsersRepository";
 
 interface IRequest {
@@ -19,17 +21,21 @@ interface IRequest {
 class UpdateUserAvatarUseCase {
   constructor(
     @inject("UsersRepository")
-    private usersRepository: IUsersRepository
+    private usersRepository: IUsersRepository,
+    @inject("StorageProvider")
+    private storageProvider: IStorageProvider
   ) {}
   async execute({ user_id, avatar_file }: IRequest): Promise<void> {
     const user = await this.usersRepository.findById(user_id);
 
     if (user.avatar) {
       // se já existir um user.avatar, deletar, pois ele será substituído
-      await deleteFile(`./tmp/avatar/${user.avatar}`); // path + nome do arquivo
+      // await deleteFile(`./tmp/avatar/${user.avatar}`); // path + nome do arquivo
+      await this.storageProvider.delete(user.avatar, "avatar"); // se já existir, deletar o avatar
     }
+
+    await this.storageProvider.save(avatar_file, "avatar");
     user.avatar = avatar_file;
-    console.log(avatar_file);
 
     // update com o avatar
     this.usersRepository.create(user);
