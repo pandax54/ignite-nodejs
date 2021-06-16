@@ -1,2 +1,9 @@
 node_modules
 .DS_Store
+new_user_credentials.csv
+.env
+*.cer
+*.csv
+temp/*
+dist
+ormconfig.json
